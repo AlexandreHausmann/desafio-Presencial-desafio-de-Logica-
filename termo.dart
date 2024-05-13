@@ -71,3 +71,5 @@ void jogoTermo() {
   stopwatch.stop();
   print('Tempo de duração: ${stopwatch.elapsed}');
 }
+
+//falta puxar um Json com palavras mas vou fazer essa implementação quando for para flutter

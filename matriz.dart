@@ -125,3 +125,5 @@ List<List<double>> multiplicarMatrizes(List<List<double>> primeiraMatriz, List<L
 
   return produtoMatrizes;
 }
+
+// falta refatorara alguams coisas apenas upando o código para acompanhamento do Academy

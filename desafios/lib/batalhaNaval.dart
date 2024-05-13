@@ -223,3 +223,5 @@ class Tabuleiro {
     return min + random.nextInt(max - min + 1);
   }
 }
+
+// falta fazer algumas validações apenas upando o código para acompanhamento do Academy
