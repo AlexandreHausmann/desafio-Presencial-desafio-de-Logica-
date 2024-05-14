@@ -1,31 +1,117 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(BatalhaNavalApp());
+  runApp(AppJogosAcademy());
 }
 
-class BatalhaNavalApp extends StatelessWidget {
+class AppJogosAcademy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Batalha Naval',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: BatalhaNavalScreen(),
+      title: 'Jogos Academy',
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.light,
+      home: TelaInicial(),
     );
   }
 }
 
-class BatalhaNavalScreen extends StatefulWidget {
+class TelaInicial extends StatelessWidget {
   @override
-  _BatalhaNavalScreenState createState() => _BatalhaNavalScreenState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Jogos Academy',
+          style: TextStyle(fontSize: 24), // Título maior
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              var brilho = MediaQuery.of(context).platformBrightness;
+              if (brilho == Brightness.dark) {
+                // Muda para o tema claro
+                Provider.of<ThemeProvider>(context, listen: false).setTheme('light');
+              } else {
+                // Muda para o tema escuro
+                Provider.of<ThemeProvider>(context, listen: false).setTheme('dark');
+              }
+            },
+            icon: Icon(Icons.brightness_4), // Ícone para alternar o tema
+          ),
+        ],
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                // Navegue para o jogo da velha
+              },
+              child: Text('Jogo da Velha'),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50), backgroundColor: Colors.blue, // Cor diferenciada
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Navegue para o jogo da forca
+              },
+              child: Text('Jogo da Forca'),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50), backgroundColor: Colors.blue, // Cor diferenciada
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Navegue para a página de termos
+              },
+              child: Text('Termo'),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50), backgroundColor: Colors.blue, // Cor diferenciada
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Navegue para a tela do Batalha Naval
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TelaBatalhaNaval()),
+                );
+              },
+              child: Text('Batalha Naval'),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50), backgroundColor: Colors.blue, // Cor diferenciada
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _BatalhaNavalScreenState extends State<BatalhaNavalScreen> {
+
+
+
+//criado para correção de erro 
+class ThemeProvider {
+  void setTheme(String s) {}
+}
+
+class TelaBatalhaNaval extends StatefulWidget {
+  @override
+  _TelaBatalhaNavalState createState() => _TelaBatalhaNavalState();
+}
+
+class _TelaBatalhaNavalState extends State<TelaBatalhaNaval> {
   final List<String> _dificuldades = ['Fácil', 'Médio', 'Difícil'];
   final Map<String, Map<String, int>> _numBarcos = {
     'Fácil': {'Pequenos': 5, 'Médios': 3, 'Grandes': 1},
@@ -35,6 +121,7 @@ class _BatalhaNavalScreenState extends State<BatalhaNavalScreen> {
   String _dificuldadeSelecionada = 'Fácil';
   late Tabuleiro _tabuleiro;
   int _jogadasRestantes = 0;
+  List<String> _quadradosClicados = [];
 
   @override
   void initState() {
@@ -46,47 +133,97 @@ class _BatalhaNavalScreenState extends State<BatalhaNavalScreen> {
     setState(() {
       _tabuleiro = Tabuleiro(_numBarcos[_dificuldadeSelecionada]!);
       _jogadasRestantes = _tabuleiro.jogadasRestantes;
+      _quadradosClicados.clear(); // Limpa a lista de quadrados clicados
     });
   }
 
   Widget _buildTabuleiro() {
     final double tamanhoCelula = MediaQuery.of(context).size.width * 0.06;
     return Column(
-      children: _tabuleiro.grid.asMap().entries.map((linhaEntry) {
-        int linhaIndex = linhaEntry.key;
-        List<String> linha = linhaEntry.value;
-        return Row(
+      children: [
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: linha.asMap().entries.map((celulaEntry) {
-            int colunaIndex = celulaEntry.key;
-            String celula = celulaEntry.value;
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  if (celula == 'B') {
-                    // Clicou em um barco
-                    _tabuleiro.grid[linhaIndex][colunaIndex] = 'X';
-                  } else {
-                    // Clicou em uma posição vazia
-                    _tabuleiro.grid[linhaIndex][colunaIndex] = 'O';
-                  }
-                  _jogadasRestantes--;
-                });
-              },
-              child: Container(
-                key: Key('$linhaIndex-$colunaIndex'),
-                width: tamanhoCelula,
-                height: tamanhoCelula,
-                margin: EdgeInsets.all(1),
-                decoration: BoxDecoration(
-                  color: celula == 'O' ? Colors.red : celula == 'X' ? Colors.green : Colors.blue,
-                  border: Border.all(color: Colors.black),
-                ),
+          children: List.generate(14, (index) {
+            return Container(
+              width: tamanhoCelula,
+              height: tamanhoCelula,
+              alignment: Alignment.center,
+              child: Text(
+                '${index + 1}',
+                style: TextStyle(fontSize: 12),
               ),
             );
-          }).toList(),
-        );
-      }).toList(),
+          }),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(14, (index) {
+            return Container(
+              width: tamanhoCelula,
+              height: tamanhoCelula,
+              alignment: Alignment.center,
+              child: Text(
+                String.fromCharCode('A'.codeUnitAt(0) + index),
+                style: TextStyle(fontSize: 12),
+              ),
+            );
+          }),
+        ),
+        ..._tabuleiro.grid.asMap().entries.map((linhaEntry) {
+          int linhaIndex = linhaEntry.key;
+          List<String> linha = linhaEntry.value;
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: tamanhoCelula,
+                height: tamanhoCelula,
+                alignment: Alignment.center,
+                child: Text(
+                  '${linhaIndex + 1}',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+              ...linha.asMap().entries.map((celulaEntry) {
+                int colunaIndex = celulaEntry.key;
+                String celula = celulaEntry.value;
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      final coordenada = '$linhaIndex-$colunaIndex';
+                      if (_quadradosClicados.contains(coordenada)) {
+                        return; // Quadrado já foi clicado, não fazer nada
+                      }
+
+                      if (celula == 'B') {
+                        // Clicou em um barco
+                        _tabuleiro.grid[linhaIndex][colunaIndex] = 'X';
+                      } else {
+                        // Clicou em uma posição vazia
+                        _tabuleiro.grid[linhaIndex][colunaIndex] = 'O';
+                      }
+                      _jogadasRestantes--;
+
+                      // Adiciona a coordenada do quadrado clicado à lista
+                      _quadradosClicados.add(coordenada);
+                    });
+                  },
+                  child: Container(
+                    key: Key('$linhaIndex-$colunaIndex'),
+                    width: tamanhoCelula,
+                    height: tamanhoCelula,
+                    margin: EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      color: celula == 'O' ? Colors.red : celula == 'X' ? Colors.green : Colors.blue,
+                      border: Border.all(color: Colors.black),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ],
+          );
+        }).toList(),
+      ],
     );
   }
 
@@ -144,7 +281,7 @@ class Tabuleiro {
   late int _jogadasRestantes;
 
   Tabuleiro(Map<String, int> numBarcos) {
-    _grid = List.generate(6, (_) => List.filled(14, ' '));
+    _grid = List.generate(10, (_) => List.filled(10, ' '));
     _adicionarBarcos(numBarcos);
     _jogadasRestantes = _grid.length * _grid[0].length;
   }
@@ -223,5 +360,3 @@ class Tabuleiro {
     return min + random.nextInt(max - min + 1);
   }
 }
-
-// falta fazer algumas validações apenas upando o código para acompanhamento do Academy
