@@ -1,9 +1,17 @@
+import 'dart:async';
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  runApp(AppJogosAcademy());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: AppJogosAcademy(),
+    ),
+  );
 }
 
 class AppJogosAcademy extends StatelessWidget {
@@ -13,7 +21,7 @@ class AppJogosAcademy extends StatelessWidget {
       title: 'Jogos Academy',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.light,
+      themeMode: Provider.of<ThemeProvider>(context).getThemeMode(),
       home: TelaInicial(),
     );
   }
@@ -31,14 +39,8 @@ class TelaInicial extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              var brilho = MediaQuery.of(context).platformBrightness;
-              if (brilho == Brightness.dark) {
-                // Muda para o tema claro
-                Provider.of<ThemeProvider>(context, listen: false).setTheme('light');
-              } else {
-                // Muda para o tema escuro
-                Provider.of<ThemeProvider>(context, listen: false).setTheme('dark');
-              }
+              final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+              themeProvider.toggleTheme();
             },
             icon: Icon(Icons.brightness_4), // Ícone para alternar o tema
           ),
@@ -50,7 +52,10 @@ class TelaInicial extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () {
-                // Navegue para o jogo da velha
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TelaJogoDaVelha()), // Navega para o jogo da velha
+                );
               },
               child: Text('Jogo da Velha'),
               style: ElevatedButton.styleFrom(
@@ -98,12 +103,77 @@ class TelaInicial extends StatelessWidget {
   }
 }
 
+class TelaJogoDaVelha extends StatefulWidget {
+  @override
+  _TelaJogoDaVelhaState createState() => _TelaJogoDaVelhaState();
+}
 
+class _TelaJogoDaVelhaState extends State<TelaJogoDaVelha> {
+  List<List<String>> _tabuleiro = List.generate(9, (_) => List.filled(9, ' '));
+  bool _jogadorXVez = true; // Indica se é a vez do jogador X
 
+  void _realizarJogada(int linha, int coluna) {
+    if (_tabuleiro[linha][coluna] == ' ') {
+      setState(() {
+        // Define o símbolo do jogador atual na célula clicada
+        _tabuleiro[linha][coluna] = _jogadorXVez ? 'X' : 'O';
+        // Alterna para o próximo jogador
+        _jogadorXVez = !_jogadorXVez;
+      });
+    }
+  }
 
-//criado para correção de erro 
-class ThemeProvider {
-  void setTheme(String s) {}
+  @override
+  Widget build(BuildContext context) {
+    final double tamanhoCelula = MediaQuery.of(context).size.width * 0.1;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Jogo da Velha'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(3, (linha) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(3, (coluna) {
+                return GestureDetector(
+                  onTap: () {
+                    _realizarJogada(linha, coluna);
+                  },
+                  child: Container(
+                    width: tamanhoCelula,
+                    height: tamanhoCelula,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      color: _getCorCelula(linha, coluna),
+                    ),
+                    child: Center(
+                      child: Text(
+                        _tabuleiro[linha][coluna],
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+
+  Color _getCorCelula(int linha, int coluna) {
+    if (_tabuleiro[linha][coluna] == 'X') {
+      return Colors.red;
+    } else if (_tabuleiro[linha][coluna] == 'O') {
+      return Colors.blue;
+    } else {
+      return Colors.white;
+    }
+  }
 }
 
 class TelaBatalhaNaval extends StatefulWidget {
@@ -137,44 +207,59 @@ class _TelaBatalhaNavalState extends State<TelaBatalhaNaval> {
     });
   }
 
+  void _resetJogo() {
+    _iniciarJogo();
+  }
+
+  void _clicarCelula(int linha, int coluna) {
+    if (!_quadradosClicados.contains('$linha-$coluna')) {
+      setState(() {
+        _quadradosClicados.add('$linha-$coluna');
+        _jogadasRestantes--;
+        if (_tabuleiro.grid[linha][coluna] == 'B') {
+          // Se acertou o navio
+          _tabuleiro.grid[linha][coluna] = 'X'; // Marca a célula como acertada
+        } else {
+          // Se errou o navio
+          _tabuleiro.grid[linha][coluna] = 'O'; // Marca a célula como errada
+        }
+      });
+    }
+  }
+
   Widget _buildTabuleiro() {
     final double tamanhoCelula = MediaQuery.of(context).size.width * 0.06;
     return Column(
       children: [
+        // Linha para as letras de A a J
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(14, (index) {
+          children: List.generate(11, (index) {
+            if (index == 0) {
+              // Espaço vazio no canto superior esquerdo
+              return Container(
+                width: tamanhoCelula,
+                height: tamanhoCelula,
+                alignment: Alignment.center,
+              );
+            }
             return Container(
               width: tamanhoCelula,
               height: tamanhoCelula,
               alignment: Alignment.center,
               child: Text(
-                '${index + 1}',
+                String.fromCharCode('A'.codeUnitAt(0) + index - 1),
                 style: TextStyle(fontSize: 12),
               ),
             );
           }),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(14, (index) {
-            return Container(
-              width: tamanhoCelula,
-              height: tamanhoCelula,
-              alignment: Alignment.center,
-              child: Text(
-                String.fromCharCode('A'.codeUnitAt(0) + index),
-                style: TextStyle(fontSize: 12),
-              ),
-            );
-          }),
-        ),
-        ..._tabuleiro.grid.asMap().entries.map((linhaEntry) {
-          int linhaIndex = linhaEntry.key;
-          List<String> linha = linhaEntry.value;
+        // Grid principal
+        ...List.generate(10, (linhaIndex) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Números de 1 a 10 à esquerda
               Container(
                 width: tamanhoCelula,
                 height: tamanhoCelula,
@@ -184,29 +269,11 @@ class _TelaBatalhaNavalState extends State<TelaBatalhaNaval> {
                   style: TextStyle(fontSize: 12),
                 ),
               ),
-              ...linha.asMap().entries.map((celulaEntry) {
-                int colunaIndex = celulaEntry.key;
-                String celula = celulaEntry.value;
+              // Células do tabuleiro
+              ...List.generate(10, (colunaIndex) {
                 return GestureDetector(
                   onTap: () {
-                    setState(() {
-                      final coordenada = '$linhaIndex-$colunaIndex';
-                      if (_quadradosClicados.contains(coordenada)) {
-                        return; // Quadrado já foi clicado, não fazer nada
-                      }
-
-                      if (celula == 'B') {
-                        // Clicou em um barco
-                        _tabuleiro.grid[linhaIndex][colunaIndex] = 'X';
-                      } else {
-                        // Clicou em uma posição vazia
-                        _tabuleiro.grid[linhaIndex][colunaIndex] = 'O';
-                      }
-                      _jogadasRestantes--;
-
-                      // Adiciona a coordenada do quadrado clicado à lista
-                      _quadradosClicados.add(coordenada);
-                    });
+                    _clicarCelula(linhaIndex, colunaIndex);
                   },
                   child: Container(
                     key: Key('$linhaIndex-$colunaIndex'),
@@ -214,17 +281,30 @@ class _TelaBatalhaNavalState extends State<TelaBatalhaNaval> {
                     height: tamanhoCelula,
                     margin: EdgeInsets.all(1),
                     decoration: BoxDecoration(
-                      color: celula == 'O' ? Colors.red : celula == 'X' ? Colors.green : Colors.blue,
+                      color: _getCorCelula(linhaIndex, colunaIndex),
                       border: Border.all(color: Colors.black),
                     ),
                   ),
                 );
-              }).toList(),
+              }),
             ],
           );
-        }).toList(),
+        }),
       ],
     );
+  }
+
+  Color _getCorCelula(int linha, int coluna) {
+    if (_tabuleiro.grid[linha][coluna] == 'X') {
+      // Celula acertada
+      return Colors.green;
+    } else if (_tabuleiro.grid[linha][coluna] == 'O') {
+      // Celula errada
+      return Colors.red;
+    } else {
+      // Celula não clicada
+      return Colors.blue;
+    }
   }
 
   @override
@@ -232,11 +312,18 @@ class _TelaBatalhaNavalState extends State<TelaBatalhaNaval> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Batalha Naval'),
+        actions: [
+          IconButton(
+            onPressed: _resetJogo,
+            icon: Icon(Icons.refresh), // Ícone para resetar o jogo
+          ),
+        ],
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            SizedBox(height: 20),
             DropdownButton<String>(
               value: _dificuldadeSelecionada,
               onChanged: (String? newValue) {
@@ -358,5 +445,33 @@ class Tabuleiro {
   int _gerarNumeroAleatorio(int min, int max) {
     final Random random = Random();
     return min + random.nextInt(max - min + 1);
+  }
+}
+
+class ThemeProvider with ChangeNotifier {
+  late ThemeMode _themeMode;
+
+  ThemeProvider() {
+    _loadTheme();
+  }
+
+  ThemeMode getThemeMode() => _themeMode;
+
+  void _loadTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isDarkMode = prefs.getBool('isDarkMode');
+    _themeMode = isDarkMode != null ? (isDarkMode ? ThemeMode.dark : ThemeMode.light) : ThemeMode.system;
+    notifyListeners();
+  }
+
+  void _saveTheme(bool isDarkMode) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isDarkMode', isDarkMode);
+  }
+
+  void toggleTheme() {
+    _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    _saveTheme(_themeMode == ThemeMode.dark);
+    notifyListeners();
   }
 }
