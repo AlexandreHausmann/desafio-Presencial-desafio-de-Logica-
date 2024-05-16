@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +25,6 @@ class AppJogosAcademy extends StatelessWidget {
     );
   }
 }
-
 class TelaInicial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -50,50 +48,73 @@ class TelaInicial extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TelaJogoDaVelha()), // Navega para o jogo da velha
-                );
-              },
-              child: Text('Jogo da Velha'),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50), backgroundColor: Colors.blue, // Cor diferenciada
+            SizedBox(
+              width: 200, // Defina a largura desejada para os botões
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TelaJogoDaVelha()), // Navega para o jogo da velha
+                  );
+                },
+                child: Text('Jogo da Velha',
+                style: TextStyle(
+                  fontSize: 25
+                ),),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 20), // Ajuste o padding conforme necessário
+                  backgroundColor: Colors.blue, // Cor diferenciada
+                ),
               ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Navegue para o jogo da forca
-              },
-              child: Text('Jogo da Forca'),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50), backgroundColor: Colors.blue, // Cor diferenciada
+            SizedBox(
+              width: 200, // Defina a mesma largura para todos os botões
+              child: ElevatedButton(
+                onPressed: () {
+                  // Navegue para o jogo da forca
+                },
+                child: Text('Jogo da Forca',
+                style: TextStyle(
+                  fontSize: 25),),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 20), // Ajuste o padding conforme necessário
+                  backgroundColor: Colors.blue, // Cor diferenciada
+                ),
               ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Navegue para a página de termos
-              },
-              child: Text('Termo'),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50), backgroundColor: Colors.blue, // Cor diferenciada
+            SizedBox(
+              width: 200, // Defina a mesma largura para todos os botões
+              child: ElevatedButton(
+                onPressed: () {
+                  // Navegue para a página de termos
+                },
+                child: Text('Termo',style: TextStyle(
+                  fontSize: 25),),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 20), // Ajuste o padding conforme necessário
+                  backgroundColor: Colors.blue, // Cor diferenciada
+                ),
               ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Navegue para a tela do Batalha Naval
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TelaBatalhaNaval()),
-                );
-              },
-              child: Text('Batalha Naval'),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50), backgroundColor: Colors.blue, // Cor diferenciada
+            SizedBox(
+              width: 200, // Defina a mesma largura para todos os botões
+              child: ElevatedButton(
+                onPressed: () {
+                  // Navegue para a tela do Batalha Naval
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TelaBatalhaNaval()),
+                  );
+                },
+                child: Text('Batalha Naval',style: TextStyle(
+                  fontSize: 25),),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 20), // Ajuste o padding conforme necessário
+                  backgroundColor: Colors.blue, // Cor diferenciada
+                ),
               ),
             ),
           ],
@@ -103,24 +124,102 @@ class TelaInicial extends StatelessWidget {
   }
 }
 
+//Jogo da Velha 
+
 class TelaJogoDaVelha extends StatefulWidget {
   @override
   _TelaJogoDaVelhaState createState() => _TelaJogoDaVelhaState();
 }
 
 class _TelaJogoDaVelhaState extends State<TelaJogoDaVelha> {
-  List<List<String>> _tabuleiro = List.generate(9, (_) => List.filled(9, ' '));
+  List<List<String>> _tabuleiro = List.generate(3, (_) => List.filled(3, ' '));
   bool _jogadorXVez = true; // Indica se é a vez do jogador X
+  int _jogadasRealizadas = 0;
+  int _vitoriasJogadorX = 0;
+  int _vitoriasJogadorO = 0;
+  int _empates = 0;
 
   void _realizarJogada(int linha, int coluna) {
     if (_tabuleiro[linha][coluna] == ' ') {
       setState(() {
         // Define o símbolo do jogador atual na célula clicada
         _tabuleiro[linha][coluna] = _jogadorXVez ? 'X' : 'O';
+        // Verifica se houve um vencedor
+        if (_verificarVencedor(linha, coluna)) {
+          _mostrarResultado('Vitória do Jogador ' + (_jogadorXVez ? 'X' : 'O'));
+          _atualizarContadorVitorias(_jogadorXVez);
+          return;
+        }
+        // Incrementa o número de jogadas realizadas
+        _jogadasRealizadas++;
+        // Se chegou a 9 jogadas e não houve vencedor, deu velha
+        if (_jogadasRealizadas == 9) {
+          _mostrarResultado('Deu Velha!');
+          _atualizarContadorEmpates();
+          return;
+        }
         // Alterna para o próximo jogador
         _jogadorXVez = !_jogadorXVez;
       });
     }
+  }
+
+  bool _verificarVencedor(int linha, int coluna) {
+    String jogadorAtual = _tabuleiro[linha][coluna];
+    // Verifica se há três símbolos iguais na linha
+    if (_tabuleiro[linha].every((element) => element == jogadorAtual)) return true;
+    // Verifica se há três símbolos iguais na coluna
+    if (_tabuleiro.every((element) => element[coluna] == jogadorAtual)) return true;
+    // Verifica se há três símbolos iguais na diagonal principal
+    if (_tabuleiro.every((element) => element[_tabuleiro.indexOf(element)] == jogadorAtual)) return true;
+    // Verifica se há três símbolos iguais na diagonal secundária
+    if (_tabuleiro.every((element) => element[2 - _tabuleiro.indexOf(element)] == jogadorAtual)) return true;
+    return false;
+  }
+
+  void _mostrarResultado(String resultado) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Resultado'),
+          content: Text(resultado),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _resetarJogo();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _resetarJogo() {
+    setState(() {
+      _tabuleiro = List.generate(3, (_) => List.filled(3, ' '));
+      _jogadorXVez = true;
+      _jogadasRealizadas = 0;
+    });
+  }
+
+  void _atualizarContadorVitorias(bool jogadorX) {
+    setState(() {
+      if (jogadorX) {
+        _vitoriasJogadorX++;
+      } else {
+        _vitoriasJogadorO++;
+      }
+    });
+  }
+
+  void _atualizarContadorEmpates() {
+    setState(() {
+      _empates++;
+    });
   }
 
   @override
@@ -131,36 +230,69 @@ class _TelaJogoDaVelhaState extends State<TelaJogoDaVelha> {
       appBar: AppBar(
         title: Text('Jogo da Velha'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(3, (linha) {
-            return Row(
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Text(
+              _jogadorXVez ? 'Vez do Jogador X' : 'Vez do Jogador O',
+              style: TextStyle(
+                fontSize: 20, 
+                fontWeight: FontWeight.bold,
+              color: _jogadorXVez ? Colors.redAccent : Colors.blueAccent),
+            ),
+          ),
+          Center(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(3, (coluna) {
-                return GestureDetector(
-                  onTap: () {
-                    _realizarJogada(linha, coluna);
-                  },
-                  child: Container(
-                    width: tamanhoCelula,
-                    height: tamanhoCelula,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      color: _getCorCelula(linha, coluna),
-                    ),
-                    child: Center(
-                      child: Text(
-                        _tabuleiro[linha][coluna],
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              children: List.generate(3, (linha) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(3, (coluna) {
+                    return GestureDetector(
+                      onTap: () {
+                        _realizarJogada(linha, coluna);
+                      },
+                      child: Container(
+                        width: tamanhoCelula,
+                        height: tamanhoCelula,
+                        margin: EdgeInsets.all(5), // Adiciona margem
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          color: _getCorCelula(linha, coluna),
+                        ),
+                        child: Center(
+                          child: Text(
+                            _tabuleiro[linha][coluna],
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
                 );
               }),
-            );
-          }),
-        ),
+            ),
+          ),
+          SizedBox(height: 20),
+          Text('Vitórias do jogador X = $_vitoriasJogadorX',
+           style: TextStyle(
+            color: Colors.red),),
+          Text('Vitórias do jogador O = $_vitoriasJogadorO',
+          style: TextStyle(
+            color: Colors.blue),),
+          Text('Empates = $_empates'),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _vitoriasJogadorX = 0;
+                _vitoriasJogadorO = 0;
+                _empates = 0;
+              });
+            },
+            child: Text('Resetar placar'),
+          ),
+        ],
       ),
     );
   }
@@ -176,6 +308,18 @@ class _TelaJogoDaVelhaState extends State<TelaJogoDaVelha> {
   }
 }
 
+//jogo da forca
+
+
+//Termo
+
+
+
+
+
+
+
+//Batalha Naval 
 class TelaBatalhaNaval extends StatefulWidget {
   @override
   _TelaBatalhaNavalState createState() => _TelaBatalhaNavalState();
@@ -448,6 +592,10 @@ class Tabuleiro {
   }
 }
 
+
+
+
+
 class ThemeProvider with ChangeNotifier {
   late ThemeMode _themeMode;
 
@@ -468,10 +616,22 @@ class ThemeProvider with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('isDarkMode', isDarkMode);
   }
-
+//inicia como dark
   void toggleTheme() {
     _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
     _saveTheme(_themeMode == ThemeMode.dark);
     notifyListeners();
   }
 }
+
+
+//oque deve ser feito ainda 
+
+//implementar o jogo da forca 
+//implementar o termo 
+//separar os jogos por arquivos 
+//colocar imagens 
+//corrigir bugs (jogo da velha quando aparece a notificação de vencedor ou empate se clicado fora buga a aplicação)
+//melhorar o visual da tela de botões 
+//
+//
