@@ -22,6 +22,11 @@ class AppJogosAcademy extends StatelessWidget {
       darkTheme: ThemeData.dark(),
       themeMode: Provider.of<ThemeProvider>(context).getThemeMode(),
       home: TelaInicial(),
+      routes: {
+        '/velha':(context) => TelaJogoDaVelha(),
+        '/forca': (context) => TelaJogoDaForca(),
+        '/naval':(context) =>  TelaBatalhaNaval(),
+      },
     );
   }
 }
@@ -32,7 +37,7 @@ class TelaInicial extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Jogos Academy',
-          style: TextStyle(fontSize: 24), // Título maior
+          style: TextStyle(fontSize: 24), 
         ),
         actions: [
           IconButton(
@@ -40,7 +45,7 @@ class TelaInicial extends StatelessWidget {
               final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
               themeProvider.toggleTheme();
             },
-            icon: Icon(Icons.brightness_4), // Ícone para alternar o tema
+            icon: Icon(Icons.brightness_4), 
           ),
         ],
       ),
@@ -49,71 +54,79 @@ class TelaInicial extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: 200, // Defina a largura desejada para os botões
+              width: 200, 
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => TelaJogoDaVelha()), // Navega para o jogo da velha
+                    MaterialPageRoute(builder: (context) => TelaJogoDaVelha()), 
                   );
                 },
                 child: Text('Jogo da Velha',
-                style: TextStyle(
-                  fontSize: 25
-                ),),
+                  style: TextStyle(
+                    fontSize: 25
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 20), // Ajuste o padding conforme necessário
-                  backgroundColor: Colors.blue, // Cor diferenciada
+                  padding: EdgeInsets.symmetric(vertical: 20), 
+                  backgroundColor: Colors.blue, 
                 ),
               ),
             ),
             SizedBox(height: 20),
             SizedBox(
-              width: 200, // Defina a mesma largura para todos os botões
+              width: 200, 
               child: ElevatedButton(
                 onPressed: () {
-                  // Navegue para o jogo da forca
+                  Navigator.pushNamed(context, '/forca'); 
                 },
                 child: Text('Jogo da Forca',
-                style: TextStyle(
-                  fontSize: 25),),
+                  style: TextStyle(
+                    fontSize: 25
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 20), // Ajuste o padding conforme necessário
-                  backgroundColor: Colors.blue, // Cor diferenciada
+                  padding: EdgeInsets.symmetric(vertical: 20), 
+                  backgroundColor: Colors.blue, 
                 ),
               ),
             ),
             SizedBox(height: 20),
             SizedBox(
-              width: 200, // Defina a mesma largura para todos os botões
+              width: 200, 
               child: ElevatedButton(
                 onPressed: () {
-                  // Navegue para a página de termos
+                  Navigator.pushNamed(context, '/termo'); 
                 },
-                child: Text('Termo',style: TextStyle(
-                  fontSize: 25),),
+                child: Text('Termo',
+                  style: TextStyle(
+                    fontSize: 25
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 20), // Ajuste o padding conforme necessário
-                  backgroundColor: Colors.blue, // Cor diferenciada
+                  padding: EdgeInsets.symmetric(vertical: 20), 
+                  backgroundColor: Colors.blue, 
                 ),
               ),
             ),
             SizedBox(height: 20),
             SizedBox(
-              width: 200, // Defina a mesma largura para todos os botões
+              width: 200, 
               child: ElevatedButton(
                 onPressed: () {
-                  // Navegue para a tela do Batalha Naval
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => TelaBatalhaNaval()),
-                  );
+                  ); 
                 },
-                child: Text('Batalha Naval',style: TextStyle(
-                  fontSize: 25),),
+                child: Text('Batalha Naval',
+                  style: TextStyle(
+                    fontSize: 25
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 20), // Ajuste o padding conforme necessário
-                  backgroundColor: Colors.blue, // Cor diferenciada
+                  padding: EdgeInsets.symmetric(vertical: 20), 
+                  backgroundColor: Colors.blue, 
                 ),
               ),
             ),
@@ -123,7 +136,6 @@ class TelaInicial extends StatelessWidget {
     );
   }
 }
-
 //Jogo da Velha 
 
 class TelaJogoDaVelha extends StatefulWidget {
@@ -133,7 +145,7 @@ class TelaJogoDaVelha extends StatefulWidget {
 
 class _TelaJogoDaVelhaState extends State<TelaJogoDaVelha> {
   List<List<String>> _tabuleiro = List.generate(3, (_) => List.filled(3, ' '));
-  bool _jogadorXVez = true; // Indica se é a vez do jogador X
+  bool _jogadorXVez = true; 
   int _jogadasRealizadas = 0;
   int _vitoriasJogadorX = 0;
   int _vitoriasJogadorO = 0;
@@ -142,23 +154,18 @@ class _TelaJogoDaVelhaState extends State<TelaJogoDaVelha> {
   void _realizarJogada(int linha, int coluna) {
     if (_tabuleiro[linha][coluna] == ' ') {
       setState(() {
-        // Define o símbolo do jogador atual na célula clicada
         _tabuleiro[linha][coluna] = _jogadorXVez ? 'X' : 'O';
-        // Verifica se houve um vencedor
         if (_verificarVencedor(linha, coluna)) {
           _mostrarResultado('Vitória do Jogador ' + (_jogadorXVez ? 'X' : 'O'));
           _atualizarContadorVitorias(_jogadorXVez);
           return;
         }
-        // Incrementa o número de jogadas realizadas
         _jogadasRealizadas++;
-        // Se chegou a 9 jogadas e não houve vencedor, deu velha
         if (_jogadasRealizadas == 9) {
           _mostrarResultado('Deu Velha!');
           _atualizarContadorEmpates();
           return;
         }
-        // Alterna para o próximo jogador
         _jogadorXVez = !_jogadorXVez;
       });
     }
@@ -166,13 +173,9 @@ class _TelaJogoDaVelhaState extends State<TelaJogoDaVelha> {
 
   bool _verificarVencedor(int linha, int coluna) {
     String jogadorAtual = _tabuleiro[linha][coluna];
-    // Verifica se há três símbolos iguais na linha
     if (_tabuleiro[linha].every((element) => element == jogadorAtual)) return true;
-    // Verifica se há três símbolos iguais na coluna
     if (_tabuleiro.every((element) => element[coluna] == jogadorAtual)) return true;
-    // Verifica se há três símbolos iguais na diagonal principal
     if (_tabuleiro.every((element) => element[_tabuleiro.indexOf(element)] == jogadorAtual)) return true;
-    // Verifica se há três símbolos iguais na diagonal secundária
     if (_tabuleiro.every((element) => element[2 - _tabuleiro.indexOf(element)] == jogadorAtual)) return true;
     return false;
   }
@@ -309,6 +312,151 @@ class _TelaJogoDaVelhaState extends State<TelaJogoDaVelha> {
 }
 
 //jogo da forca
+class TelaJogoDaForca extends StatefulWidget {
+  @override
+  _TelaJogoDaForcaState createState() => _TelaJogoDaForcaState();
+}
+
+class _TelaJogoDaForcaState extends State<TelaJogoDaForca> {
+  final Map<String, String> _palavras = {
+    'GATO': ' Animal doméstico de estimação que gosta de caçar ratos.',
+    'SOL': 'Estrela ao redor da qual a Terra orbita.',
+    'BOLA': 'Objeto esférico usado em diversos esportes, como futebol e basquete.',
+    'AGUA': 'Substância líquida essencial para a vida, composta por hidrogênio e oxigênio.',
+    'CASA': 'Lugar onde as pessoas moram, geralmente feito de tijolos, madeira ou concreto.',
+    'LIVRO':'Objeto usado para ler e armazenar informações, geralmente composto por páginas de papel.',
+    'RATO':'Pequeno roedor conhecido por sua capacidade de se reproduzir rapidamente.',
+    'MESA':'Móvel com uma superfície plana e pernas, usado para apoiar objetos.',
+    'CHUVA':'Precipitação atmosférica na forma de gotas de água que caem da nuvem para a superfície da Terra.',
+    'FLOR':'Estrutura reprodutiva encontrada em plantas, muitas vezes colorida e perfumada.',
+    'HIPOTENUSA':'No triângulo retângulo, é o lado oposto ao ângulo reto.',
+    'PARADIGMA':'Modelo ou padrão que serve como exemplo ou referência em determinado contexto.',
+    'ONIVORO':'Tipo de animal que se alimenta tanto de carne quanto de vegetais.',
+    'FOTOSSINTESE':'Processo realizado pelas plantas para converter luz solar, dióxido de carbono e água em energia química.',
+    'ANARQUIA':'Ausência de autoridade ou governo centralizado, baseada na liberdade individual e na autonomia dos grupos sociais.',
+    'NEANDERTAL':'Espécie extinta de hominídeo que viveu na Europa e no Oriente Médio durante o Paleolítico Médio e Superior.',
+    'EQUIDADE':' Princípio de justiça que busca tratar cada pessoa de acordo com suas necessidades específicas e peculiaridades.',
+    'ESPLENDOR':' Brilho intenso e radiante; grandeza ou magnificência impressionante.',
+    'QUILOMBO':'Assentamento habitado por escravos fugitivos no período colonial brasileiro, que buscavam liberdade e autonomia.',
+    'EMBRIAGUEZ':' Estado de intoxicação causado pelo consumo excessivo de álcool ou substâncias psicoativas.'
+   //Utilizado o ChatGPT para pegar as palavras com dicas, as 10 primeiras palavras são mais simples, enquanto as 10 ultimas mais complexas.
+
+  };
+  late String _palavraSelecionada;
+  late String _dica;
+  List<String> _letrasCorretas = [];
+  List<String> _letrasErradas = [];
+  int _tentativasRestantes = 6;
+
+  @override
+  void initState() {
+    super.initState();
+    _palavraSelecionada = _palavras.keys.toList()[Random().nextInt(_palavras.length)];
+    _dica = _palavras[_palavraSelecionada]!;
+    _letrasCorretas = List.filled(_palavraSelecionada.length, '_');
+  }
+
+  void _resetarJogo() {
+    setState(() {
+      _palavraSelecionada = _palavras.keys.toList()[Random().nextInt(_palavras.length)];
+      _dica = _palavras[_palavraSelecionada]!;
+      _letrasCorretas = List.filled(_palavraSelecionada.length, '_');
+      _letrasErradas.clear();
+      _tentativasRestantes = 6;
+    });
+  }
+
+  void _adivinharLetra(String letra) {
+    if (_palavraSelecionada.contains(letra)) {
+      setState(() {
+        for (int i = 0; i < _palavraSelecionada.length; i++) {
+          if (_palavraSelecionada[i] == letra) {
+            _letrasCorretas[i] = letra;
+          }
+        }
+        if (!_letrasCorretas.contains('_')) {
+          _mostrarResultado('Você venceu!');
+        }
+      });
+    } else {
+      setState(() {
+        _letrasErradas.add(letra);
+        _tentativasRestantes--;
+        if (_tentativasRestantes == 0) {
+          _mostrarResultado('Você perdeu! A palavra era $_palavraSelecionada.');
+        }
+      });
+    }
+  }
+
+  void _mostrarResultado(String resultado) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Resultado'),
+          content: Text(resultado),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _resetarJogo();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+ Widget _buildLetraButton(String letra) {
+    return ElevatedButton(
+      onPressed: _letrasCorretas.contains(letra) || _letrasErradas.contains(letra)
+          ? null
+          : () => _adivinharLetra(letra),
+      child: Text(letra),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Jogo da Forca'),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Tentativas restantes: $_tentativasRestantes',
+            style: TextStyle(fontSize: 20),
+          ),
+          SizedBox(height: 20),
+          Text(
+            _letrasCorretas.join(' '),
+            style: TextStyle(fontSize: 30, letterSpacing: 2),
+          ),
+          SizedBox(height: 20),
+          Text(
+            'Dica: $_dica', // dica das palavras 
+            style: TextStyle(fontSize: 20),
+          ),
+          SizedBox(height: 20),
+          Wrap(
+            spacing: 5,
+            children: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(_buildLetraButton).toList(),
+          ),
+          SizedBox(height: 20),
+          Text(
+            'Letras erradas: ${_letrasErradas.join(', ')}',
+            style: TextStyle(fontSize: 18),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 
 //Termo
@@ -347,7 +495,7 @@ class _TelaBatalhaNavalState extends State<TelaBatalhaNaval> {
     setState(() {
       _tabuleiro = Tabuleiro(_numBarcos[_dificuldadeSelecionada]!);
       _jogadasRestantes = _tabuleiro.jogadasRestantes;
-      _quadradosClicados.clear(); // Limpa a lista de quadrados clicados
+      _quadradosClicados.clear(); 
     });
   }
 
@@ -361,11 +509,9 @@ class _TelaBatalhaNavalState extends State<TelaBatalhaNaval> {
         _quadradosClicados.add('$linha-$coluna');
         _jogadasRestantes--;
         if (_tabuleiro.grid[linha][coluna] == 'B') {
-          // Se acertou o navio
-          _tabuleiro.grid[linha][coluna] = 'X'; // Marca a célula como acertada
+          _tabuleiro.grid[linha][coluna] = 'X'; 
         } else {
-          // Se errou o navio
-          _tabuleiro.grid[linha][coluna] = 'O'; // Marca a célula como errada
+          _tabuleiro.grid[linha][coluna] = 'O'; 
         }
       });
     }
@@ -375,12 +521,10 @@ class _TelaBatalhaNavalState extends State<TelaBatalhaNaval> {
     final double tamanhoCelula = MediaQuery.of(context).size.width * 0.06;
     return Column(
       children: [
-        // Linha para as letras de A a J
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(11, (index) {
             if (index == 0) {
-              // Espaço vazio no canto superior esquerdo
               return Container(
                 width: tamanhoCelula,
                 height: tamanhoCelula,
@@ -398,12 +542,10 @@ class _TelaBatalhaNavalState extends State<TelaBatalhaNaval> {
             );
           }),
         ),
-        // Grid principal
         ...List.generate(10, (linhaIndex) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Números de 1 a 10 à esquerda
               Container(
                 width: tamanhoCelula,
                 height: tamanhoCelula,
@@ -413,7 +555,6 @@ class _TelaBatalhaNavalState extends State<TelaBatalhaNaval> {
                   style: TextStyle(fontSize: 12),
                 ),
               ),
-              // Células do tabuleiro
               ...List.generate(10, (colunaIndex) {
                 return GestureDetector(
                   onTap: () {
@@ -440,13 +581,10 @@ class _TelaBatalhaNavalState extends State<TelaBatalhaNaval> {
 
   Color _getCorCelula(int linha, int coluna) {
     if (_tabuleiro.grid[linha][coluna] == 'X') {
-      // Celula acertada
       return Colors.green;
     } else if (_tabuleiro.grid[linha][coluna] == 'O') {
-      // Celula errada
       return Colors.red;
     } else {
-      // Celula não clicada
       return Colors.blue;
     }
   }
@@ -459,7 +597,7 @@ class _TelaBatalhaNavalState extends State<TelaBatalhaNaval> {
         actions: [
           IconButton(
             onPressed: _resetJogo,
-            icon: Icon(Icons.refresh), // Ícone para resetar o jogo
+            icon: Icon(Icons.refresh), 
           ),
         ],
       ),
@@ -627,7 +765,6 @@ class ThemeProvider with ChangeNotifier {
 
 //oque deve ser feito ainda 
 
-//implementar o jogo da forca 
 //implementar o termo 
 //separar os jogos por arquivos 
 //colocar imagens 
@@ -636,3 +773,4 @@ class ThemeProvider with ChangeNotifier {
 //
 //fazer um banco de dados para guardar algumas coisas 
 //se sobrar tempo acrecentar um jogo de caça palavras e alguns outros joguinhos
+//refatorar todos os códigos e testar tudo um por um 
