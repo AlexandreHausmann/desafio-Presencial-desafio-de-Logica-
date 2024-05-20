@@ -6,8 +6,8 @@ void main() {
 }
 
 void jogoTermo() {
-  final List<String> dicionario = ['ALPES', 'ARVOS', 'CABRA', 'BOMBO', 'GRUPO', 'TECIDO',
-   'PATO', 'BANHO', 'ALVAR', 'SESCO'];
+  final List<String> dicionario = ['ALPES', 'ARVOS', 'CABRA', 'BOMBO', 'GRUPO', 
+   'PATOS', 'BANHO', 'ALVAR', 'SESCO'];
   final Random random = Random();
   final String palavraSecreta = dicionario[random.nextInt(dicionario.length)];
 

@@ -25,6 +25,7 @@ class AppJogosAcademy extends StatelessWidget {
       routes: {
         '/velha':(context) => TelaJogoDaVelha(),
         '/forca': (context) => TelaJogoDaForca(),
+        '/termo': (context) => TermoHomePage(),
         '/naval':(context) =>  TelaBatalhaNaval(),
       },
     );
@@ -460,7 +461,99 @@ class _TelaJogoDaForcaState extends State<TelaJogoDaForca> {
 
 
 //Termo
+class TermoApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Jogo Termo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: TermoHomePage(),
+    );
+  }
+}
 
+class TermoHomePage extends StatefulWidget {
+  @override
+  _TermoHomePageState createState() => _TermoHomePageState();
+}
+
+class _TermoHomePageState extends State<TermoHomePage> {
+  String palavraSecreta = _gerarPalavra(); // Palavra aleatória
+  List<String> letrasSelecionadas = [];
+
+  static String _gerarPalavra() {
+    List<String> palavras = ['VENUS', 'CARRO', 'OSSOS', 'FLORE', 'AMIGO'];
+    final rand = Random();
+    return palavras[rand.nextInt(palavras.length)];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Jogo Termo'),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: Center(
+                child: Text(
+                  palavraSecreta,
+                  style: TextStyle(fontSize: 24),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 16.0),
+          _buildTeclado(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTeclado() {
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Wrap(
+        spacing: 4.0,
+        runSpacing: 4.0,
+        children: List.generate(
+          26,
+          (index) {
+            final letra = String.fromCharCode('A'.codeUnitAt(0) + index);
+            return GestureDetector(
+              onTap: () {
+                // Ação quando uma letra do teclado é clicada
+                setState(() {
+                  letrasSelecionadas.add(letra);
+                });
+              },
+              child: Container(
+                width: 40.0,
+                height: 40.0,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: letrasSelecionadas.contains(letra)
+                      ? Colors.green // Se a letra já foi selecionada, muda para verde
+                      : Colors.white,
+                  border: Border.all(color: Colors.black),
+                ),
+                child: Text(letra, style: TextStyle(fontSize: 20)),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
 
 
 
