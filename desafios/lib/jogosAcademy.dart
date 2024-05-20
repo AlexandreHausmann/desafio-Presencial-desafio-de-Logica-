@@ -948,7 +948,6 @@ class ThemeProvider with ChangeNotifier {
 
 //oque deve ser feito ainda 
 
-//implementar o termo 
 //separar os jogos por arquivos 
 //colocar imagens 
 //corrigir bugs (jogo da velha quando aparece a notificação de vencedor ou empate se clicado fora buga a aplicação)
@@ -956,4 +955,5 @@ class ThemeProvider with ChangeNotifier {
 //
 //fazer um banco de dados para guardar algumas coisas 
 //se sobrar tempo acrecentar um jogo de caça palavras e alguns outros joguinhos
+//
 //refatorar todos os códigos e testar tudo um por um 
