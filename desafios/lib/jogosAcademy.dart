@@ -460,19 +460,19 @@ class _TelaJogoDaForcaState extends State<TelaJogoDaForca> {
 }
 
 
-//Termo
-class TermoApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Jogo Termo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: TermoHomePage(),
-    );
-  }
-}
+// //Termo
+// class TermoApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Jogo Termo',
+//       theme: ThemeData(
+//         primarySwatch: Colors.blue,
+//       ),
+//       home: TermoHomePage(),
+//     );
+//   }
+// }
 
 class TermoHomePage extends StatefulWidget {
   @override
@@ -482,6 +482,9 @@ class TermoHomePage extends StatefulWidget {
 class _TermoHomePageState extends State<TermoHomePage> {
   String palavraSecreta = _gerarPalavra(); // Palavra aleatória
   List<String> letrasSelecionadas = [];
+  List<String> tentativas = [];
+  int tentativasRestantes = 6;
+  bool jogoFinalizado = false;
 
   static String _gerarPalavra() {
     List<String> palavras = ['VENUS', 'CARRO', 'OSSOS', 'FLORE', 'AMIGO'];
@@ -489,31 +492,112 @@ class _TermoHomePageState extends State<TermoHomePage> {
     return palavras[rand.nextInt(palavras.length)];
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Jogo Termo'),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+  void _verificarPalavra(String palpite) {
+    if (palpite.length != 5 || tentativas.contains(palpite) || jogoFinalizado) {
+      return;
+    }
+
+    setState(() {
+      tentativas.add(palpite);
+      tentativasRestantes--;
+
+      if (palpite == palavraSecreta) {
+        jogoFinalizado = true;
+      } else if (tentativasRestantes == 0) {
+        jogoFinalizado = true;
+      }
+    });
+  }
+
+  void _resetarJogo() {
+    setState(() {
+      palavraSecreta = _gerarPalavra();
+      letrasSelecionadas.clear();
+      tentativas.clear();
+      tentativasRestantes = 6;
+      jogoFinalizado = false;
+    });
+  }
+
+ @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            child: Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: Center(
-                child: Text(
-                  palavraSecreta,
-                  style: TextStyle(fontSize: 24),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 16.0),
-          _buildTeclado(),
+          Text('Jogo Termo'),
+          Text('Tentativas: $tentativasRestantes'),
         ],
       ),
+    ),
+    body: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: Container(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  jogoFinalizado
+                      ? (tentativas.last == palavraSecreta
+                          ? 'Parabéns! Você acertou!'
+                          : 'Você perdeu! A palavra era $palavraSecreta')
+                      : 'Faça sua tentativa!',
+                  style: TextStyle(fontSize: 24),
+                ),
+                SizedBox(height: 16.0),
+                if (jogoFinalizado)
+                  ElevatedButton(
+                    onPressed: _resetarJogo,
+                    child: Text('Reiniciar Jogo'),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: 16.0),
+        _buildTentativas(),
+        SizedBox(height: 16.0),
+        _buildTeclado(),
+      ],
+    ),
+  );
+}
+
+  Widget _buildTentativas() {
+    return Column(
+      children: tentativas.map((palpite) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(5, (index) {
+            final letra = palpite[index];
+            Color bgColor;
+            if (palavraSecreta[index] == letra) {
+              bgColor = Colors.greenAccent.shade700;
+            } else if (palavraSecreta.contains(letra)) {
+              bgColor = Colors.yellowAccent.shade700;
+            } else {
+              bgColor = Colors.grey;
+            }
+
+            return Container(
+              margin: EdgeInsets.all(4.0),
+              width: 40.0,
+              height: 40.0,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: bgColor,
+                border: Border.all(color: Colors.black),
+              ),
+              child: Text(letra, style: TextStyle(fontSize: 20)),
+            );
+          }),
+        );
+      }).toList(),
     );
   }
 
@@ -530,9 +614,14 @@ class _TermoHomePageState extends State<TermoHomePage> {
             final letra = String.fromCharCode('A'.codeUnitAt(0) + index);
             return GestureDetector(
               onTap: () {
-                // Ação quando uma letra do teclado é clicada
+                if (jogoFinalizado) return;
                 setState(() {
                   letrasSelecionadas.add(letra);
+                  if (letrasSelecionadas.length == 5) {
+                    final palpite = letrasSelecionadas.join('');
+                    _verificarPalavra(palpite);
+                    letrasSelecionadas.clear();
+                  }
                 });
               },
               child: Container(
@@ -541,8 +630,8 @@ class _TermoHomePageState extends State<TermoHomePage> {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: letrasSelecionadas.contains(letra)
-                      ? Colors.green // Se a letra já foi selecionada, muda para verde
-                      : Colors.white,
+                      ? Colors.blue
+                      : const Color.fromARGB(255, 94, 94, 94),
                   border: Border.all(color: Colors.black),
                 ),
                 child: Text(letra, style: TextStyle(fontSize: 20)),
@@ -556,6 +645,7 @@ class _TermoHomePageState extends State<TermoHomePage> {
 }
 
 
+// falta finalizar 
 
 
 
