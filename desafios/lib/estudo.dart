@@ -191,53 +191,53 @@ void diminuiSlaraio(int valor){
 //           ),
 //           ),
 //         );
+// //   }
+// // }
+// import 'package:flutter/material.dart';
+
+// void main() {
+//   runApp(MyApp());
+// }
+
+// class MyApp extends StatefulWidget {
+//   const MyApp({Key? key}) : super(key: key);
+
+//   @override
+//   State<MyApp> createState() => _MyAppState();
+// }
+
+// class _MyAppState extends State<MyApp> {
+//   List<String> listaProdutos = [];
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     for (int i = 1; i <= 100; i++) {
+//       listaProdutos.add('P $i');
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: Scaffold(
+//         appBar: AppBar(
+//           title: Text('List View'),
+//         ),
+//         body: ListView.builder(
+//           itemCount: listaProdutos.length,
+//           itemBuilder: (context, indice) {
+//             return ListTile(
+//               title: Text(
+//                 listaProdutos[indice],
+//               ),
+//             );
+//           },
+//         ),
+//       ),
+//     );
 //   }
 // }
-import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  List<String> listaProdutos = [];
-
-  @override
-  void initState() {
-    super.initState();
-    for (int i = 1; i <= 100; i++) {
-      listaProdutos.add('P $i');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('List View'),
-        ),
-        body: ListView.builder(
-          itemCount: listaProdutos.length,
-          itemBuilder: (context, indice) {
-            return ListTile(
-              title: Text(
-                listaProdutos[indice],
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
 
 //!!!!!
 //aula | | |
