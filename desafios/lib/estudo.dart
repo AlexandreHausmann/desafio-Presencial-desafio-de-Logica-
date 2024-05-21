@@ -225,12 +225,11 @@ void diminuiSlaraio(int valor){
 //           title: Text('List View'),
 //         ),
 //         body: ListView.builder(
+//           reverse: false, //deixar a lista invertida caso true  
 //           itemCount: listaProdutos.length,
 //           itemBuilder: (context, indice) {
 //             return ListTile(
-//               title: Text(
-//                 listaProdutos[indice],
-//               ),
+//               title: Text('${listaProdutos[indice]}'),
 //             );
 //           },
 //         ),
@@ -238,8 +237,129 @@ void diminuiSlaraio(int valor){
 //     );
 //   }
 // }
+////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+///Text fild 
+///
+///
+import 'package:flutter/material.dart';
+
+enum Genero{
+  Masculino,
+  Feminino,
+  Outro
+}
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String email = '';
+  String senha = '';
+  bool termos = false;
+  Genero genero = Genero.Masculino;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Página de cadastro'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(40.0), // antes do Column foi dado um CTRL + . para criar a padding 
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.stretch, // estica o Botão para a tela inteira 
+            children: [
+              Text(
+                'Insira seus dados',
+                style: TextStyle(fontSize: 20),
+              ),
+              // TextField(), // aqui para escrever na tela 
+              // Text('Email'),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'E-mail' // a escrita email fica dentro 
+                ),
+                onChanged: (text) {
+                  if (text.contains('@')) {
+                    email = text; // armazenar o email
+                  }
+                },
+              ),
+              // Text('Senha'),
+              TextField(
+                obscureText: true, // formulário de senha não mostra a senha 
+                decoration: InputDecoration(
+                  labelText: 'Senha',
+                ),
+                onChanged: (text) {
+                  senha = text; // armazenar a senha
+                },
+              ),
+
+                // Radio(value: genero,
+                //  groupValue: genero,
+                //   onChanged: (Genero generoSelecionado){
+                //     setState((){
+                //       genero = generoSelecionado; 
+                //     });
+                //   },
+                //   ),
+
+
+
+
+
+              Row(
+                children: [
+                  Checkbox(
+                    value: termos, // checkbox
+                    onChanged: (checked) {
+                      setState(() {
+                        termos = checked ?? false; // atualizar termos
+                      });
+                    },
+                  ),
+                  Text('Concordo'),
+                ],
+              ),
+              // Text('esqueceu a senha ?'),
+              ElevatedButton(
+                onPressed: () {
+                  if (termos && email.isNotEmpty && senha.isNotEmpty) {
+                    // lógica para o botão Entrar
+                    print('Email: $email, Senha: $senha');
+                  } else {
+                    // lógica de validação
+                    print('Preencha todos os campos e aceite os termos.');
+                  }
+                },
+                child: Text('Entrar'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+// assistir com calma sobre o Radio 
 
 //!!!!!
 //aula | | |
 //     V V V
-//Fluter Utilizando o Widget "Row"
+//Fluter Navegação com rotas 
