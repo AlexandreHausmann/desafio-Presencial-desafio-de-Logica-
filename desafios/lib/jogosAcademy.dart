@@ -235,6 +235,8 @@ class _TelaJogoDaVelhaState extends State<TelaJogoDaVelha> {
         title: Text('Jogo da Velha'),
       ),
       body: Column(
+        ////////////////////
+        //adicionar imagem aqui 
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
@@ -427,6 +429,8 @@ class _TelaJogoDaForcaState extends State<TelaJogoDaForca> {
         title: Text('Jogo da Forca'),
       ),
       body: Column(
+         ////////////////////
+        //adicionar imagem aqui 
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
@@ -532,6 +536,8 @@ Widget build(BuildContext context) {
       ),
     ),
     body: Column(
+       ////////////////////
+        //adicionar imagem aqui 
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -785,6 +791,8 @@ class _TelaBatalhaNavalState extends State<TelaBatalhaNaval> {
         ],
       ),
       body: Center(
+         ////////////////////
+        //adicionar imagem aqui 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

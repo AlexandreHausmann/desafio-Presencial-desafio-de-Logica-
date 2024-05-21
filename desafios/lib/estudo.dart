@@ -112,10 +112,134 @@ void diminuiSlaraio(int valor){
 }
 */
 
-import 'package:flutter/material.dart';
-// primarySwatch: Colors.blue, é basicamente o tema do App
+// import 'package:flutter/material.dart';
+// // primarySwatch: Colors.blue, é basicamente o tema do App
 
-!!!!!
+// void main(){
+//   runApp(MyApp());
+// }
+// class MyApp extends StatefulWidget {
+//   const MyApp({Key? key}): super(key: key);
+
+//   @override
+//   State<MyApp> createState() => _MyAppState();
+// }
+
+// class _MyAppState extends State<MyApp> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: Scaffold(
+//         appBar: AppBar(
+//           title: Text('Titulo App'),
+//         ),
+//         body: Center(
+//           child:Column( //Colunm é tudo na coluna
+//            mainAxisAlignment: MainAxisAlignment.spaceAround,
+//           //  Row( //Row é tudo na mesma linha
+//           //   mainAxisAlignment: MainAxisAlignment.spaceAround, //alinhamento do Row
+//             children: [
+//               Center(
+//               child:Text(
+//                 'Texto 1',
+//                 style: TextStyle(
+//                   fontSize: 25),
+//                   ),
+//               ),
+//                Center(
+//               child:Text(
+//                 'Texto 2',
+//                 style: TextStyle(
+//                   fontSize: 25),
+//                   ),
+//               ),
+//                Center(
+//               child:Text(
+//                 'Texto 3',
+//                 style: TextStyle(
+//                   fontSize: 25),
+//                   ),
+//               ),
+//             ]
+//           )),
+//         ),
+//     );
+//   }
+// }
+
+// import 'package:flutter/material.dart';
+
+// void main(){
+//   runApp(Myapp());
+// }
+
+// class Myapp extends StatelessWidget {
+//   const Myapp({Key? key}): super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//         child: Center(
+//           child: Text(
+//             'texto',
+//           textDirection: TextDirection.ltr,
+//           style: TextStyle(
+//             fontSize: 50,
+//             fontWeight: FontWeight.normal,
+//             color: Colors.yellowAccent.shade700,
+//           ),
+//           ),
+//           ),
+//         );
+//   }
+// }
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  List<String> listaProdutos = [];
+
+  @override
+  void initState() {
+    super.initState();
+    for (int i = 1; i <= 100; i++) {
+      listaProdutos.add('P $i');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('List View'),
+        ),
+        body: ListView.builder(
+          itemCount: listaProdutos.length,
+          itemBuilder: (context, indice) {
+            return ListTile(
+              title: Text(
+                listaProdutos[indice],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+//!!!!!
 //aula | | |
 //     V V V
 //Fluter Utilizando o Widget "Row"
