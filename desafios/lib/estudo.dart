@@ -244,117 +244,216 @@ void diminuiSlaraio(int valor){
 ///Text fild 
 ///
 ///
+// import 'package:flutter/material.dart';
+
+// enum Genero{
+//   Masculino,
+//   Feminino,
+//   Outro
+// }
+
+// void main() {
+//   runApp(MyApp());
+// }
+
+// class MyApp extends StatefulWidget {
+//   const MyApp({Key? key}) : super(key: key);
+
+//   @override
+//   State<MyApp> createState() => _MyAppState();
+// }
+
+// class _MyAppState extends State<MyApp> {
+//   String email = '';
+//   String senha = '';
+//   bool termos = false;
+//   Genero genero = Genero.Masculino;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: Scaffold(
+//         appBar: AppBar(
+//           title: Text('Página de cadastro'),
+//         ),
+//         body: Padding(
+//           padding: const EdgeInsets.all(40.0), // antes do Column foi dado um CTRL + . para criar a padding 
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.spaceAround,
+//             crossAxisAlignment: CrossAxisAlignment.stretch, // estica o Botão para a tela inteira 
+//             children: [
+//               Text(
+//                 'Insira seus dados',
+//                 style: TextStyle(fontSize: 20),
+//               ),
+//               // TextField(), // aqui para escrever na tela 
+//               // Text('Email'),
+//               TextField(
+//                 decoration: InputDecoration(
+//                   labelText: 'E-mail' // a escrita email fica dentro 
+//                 ),
+//                 onChanged: (text) {
+//                   if (text.contains('@')) {
+//                     email = text; // armazenar o email
+//                   }
+//                 },
+//               ),
+//               // Text('Senha'),
+//               TextField(
+//                 obscureText: true, // formulário de senha não mostra a senha 
+//                 decoration: InputDecoration(
+//                   labelText: 'Senha',
+//                 ),
+//                 onChanged: (text) {
+//                   senha = text; // armazenar a senha
+//                 },
+//               ),
+
+//                 // Radio(value: genero,
+//                 //  groupValue: genero,
+//                 //   onChanged: (Genero generoSelecionado){
+//                 //     setState((){
+//                 //       genero = generoSelecionado; 
+//                 //     });
+//                 //   },
+//                 //   ),
+
+
+
+
+
+//               Row(
+//                 children: [
+//                   Checkbox(
+//                     value: termos, // checkbox
+//                     onChanged: (checked) {
+//                       setState(() {
+//                         termos = checked ?? false; // atualizar termos
+//                       });
+//                     },
+//                   ),
+//                   Text('Concordo'),
+//                 ],
+//               ),
+//               // Text('esqueceu a senha ?'),
+//               ElevatedButton(
+//                 onPressed: () {
+//                   if (termos && email.isNotEmpty && senha.isNotEmpty) {
+//                     // lógica para o botão Entrar
+//                     print('Email: $email, Senha: $senha');
+//                   } else {
+//                     // lógica de validação
+//                     print('Preencha todos os campos e aceite os termos.');
+//                   }
+//                 },
+//                 child: Text('Entrar'),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+///////////////////////////////////// navegação com rotas //////////////////////////
+///
+///
+
 import 'package:flutter/material.dart';
 
-enum Genero{
-  Masculino,
-  Feminino,
-  Outro
-}
-
-void main() {
+void main(){
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class Argumentos{                //transição de dados entre telas 
+  final int id;
+  final String nome;
+  Argumentos(this.id,this.nome);
 
-  @override
-  State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  String email = '';
-  String senha = '';
-  bool termos = false;
-  Genero genero = Genero.Masculino;
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}):super(key: key);
+
+ static const routeName = '/tela2';    //transição de dados entre telas 
 
   @override
   Widget build(BuildContext context) {
+
+    final argumentos = ModalRoute.of(context)!.settings.arguments as Argumentos;   //transição de dados entre telas 
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Página de cadastro'),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(40.0), // antes do Column foi dado um CTRL + . para criar a padding 
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.stretch, // estica o Botão para a tela inteira 
-            children: [
-              Text(
-                'Insira seus dados',
-                style: TextStyle(fontSize: 20),
-              ),
-              // TextField(), // aqui para escrever na tela 
-              // Text('Email'),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'E-mail' // a escrita email fica dentro 
-                ),
-                onChanged: (text) {
-                  if (text.contains('@')) {
-                    email = text; // armazenar o email
-                  }
-                },
-              ),
-              // Text('Senha'),
-              TextField(
-                obscureText: true, // formulário de senha não mostra a senha 
-                decoration: InputDecoration(
-                  labelText: 'Senha',
-                ),
-                onChanged: (text) {
-                  senha = text; // armazenar a senha
-                },
-              ),
-
-                // Radio(value: genero,
-                //  groupValue: genero,
-                //   onChanged: (Genero generoSelecionado){
-                //     setState((){
-                //       genero = generoSelecionado; 
-                //     });
-                //   },
-                //   ),
-
-
-
-
-
-              Row(
-                children: [
-                  Checkbox(
-                    value: termos, // checkbox
-                    onChanged: (checked) {
-                      setState(() {
-                        termos = checked ?? false; // atualizar termos
-                      });
-                    },
-                  ),
-                  Text('Concordo'),
-                ],
-              ),
-              // Text('esqueceu a senha ?'),
-              ElevatedButton(
-                onPressed: () {
-                  if (termos && email.isNotEmpty && senha.isNotEmpty) {
-                    // lógica para o botão Entrar
-                    print('Email: $email, Senha: $senha');
-                  } else {
-                    // lógica de validação
-                    print('Preencha todos os campos e aceite os termos.');
-                  }
-                },
-                child: Text('Entrar'),
-              ),
-            ],
-          ),
-        ),
-      ),
+      home:Tela1(),
+      routes:{
+        '/tela1' : (context) => Tela1(), //rotas nomiadas, sempre utilizar  
+        //Tela2.routeName:(context) => Tela2(), //transição de dados entre telas 
+        '/tela2' : (context) => Tela2()
+      }
     );
   }
 }
+  class Tela1 extends StatelessWidget {
+    const Tela1({Key? key}): super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Container(
+        child: MaterialApp(
+          home: Scaffold(
+            appBar:AppBar(
+              title:Text('Tela1'),
+              backgroundColor: Colors.greenAccent.shade700
+            ),
+            body:Center(
+              child: ElevatedButton(
+              child: Text('ir tela2'),
+              onPressed: (){
+                Navigator.pushNamed(context,  '/tela2');
+              },
+              /*
+              onPressed: () { Navigator.push(context,      ////aqui navega entre telas  utilizando o push
+              MaterialPageRoute(
+                builder: (context){return Tela2();
+                },
+                ));
+
+              },
+              */
+            ),
+          ),
+         ),
+        ),
+      );
+    }
+  }
+
+  class Tela2 extends StatelessWidget {
+    const Tela2({Key? key}): super(key: key);
+  
+    @override
+    Widget build(BuildContext context) {
+      return Container(
+        child: MaterialApp(
+          home: Scaffold(
+            appBar:AppBar(
+              title:Text('Tela2'),
+              backgroundColor: Colors.redAccent.shade700,
+            ),
+                  body:Center(
+              child: ElevatedButton(
+              child: Text('retornar a tela1'),
+               onPressed: (){
+                Navigator.pushNamed(context,  '/tela1');
+              },
+              //onPressed: () { Navigator.pop(context);}    ////aqui navega entre telas  utilizando o pop
+            ),
+          ),
+            ),
+        ),
+      );
+    }
+  }
+
+
 
 
 // assistir com calma sobre o Radio 
