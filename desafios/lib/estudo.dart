@@ -359,106 +359,124 @@ void diminuiSlaraio(int valor){
 ///
 ///
 
+// import 'package:flutter/material.dart';
+
+// void main(){
+//   runApp(MyApp());
+// }
+
+// class Argumentos{                //transição de dados entre telas 
+//   final int id;
+//   final String nome;
+//   Argumentos(this.id,this.nome);
+
+// }
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({Key? key}):super(key: key);
+
+//  static const routeName = '/tela2';    //transição de dados entre telas 
+
+//   @override
+//   Widget build(BuildContext context) {
+
+//     final argumentos = ModalRoute.of(context)!.settings.arguments as Argumentos;   //transição de dados entre telas 
+//     return MaterialApp(
+//       home:Tela1(),
+//       routes:{
+//         '/tela1' : (context) => Tela1(), //rotas nomiadas, sempre utilizar  
+//         //Tela2.routeName:(context) => Tela2(), //transição de dados entre telas 
+//         '/tela2' : (context) => Tela2()
+//       }
+//     );
+//   }
+// }
+//   class Tela1 extends StatelessWidget {
+//     const Tela1({Key? key}): super(key: key);
+  
+//     @override
+//     Widget build(BuildContext context) {
+//       return Container(
+//         child: MaterialApp(
+//           home: Scaffold(
+//             appBar:AppBar(
+//               title:Text('Tela1'),
+//               backgroundColor: Colors.greenAccent.shade700
+//             ),
+//             body:Center(
+//               child: ElevatedButton(
+//               child: Text('ir tela2'),
+//               onPressed: (){
+//                 Navigator.pushNamed(context,  '/tela2');
+//               },
+//               /*
+//               onPressed: () { Navigator.push(context,      ////aqui navega entre telas  utilizando o push
+//               MaterialPageRoute(
+//                 builder: (context){return Tela2();
+//                 },
+//                 ));
+
+//               },
+//               */
+//             ),
+//           ),
+//          ),
+//         ),
+//       );
+//     }
+//   }
+
+//   class Tela2 extends StatelessWidget {
+//     const Tela2({Key? key}): super(key: key);
+  
+//     @override
+//     Widget build(BuildContext context) {
+//       return Container(
+//         child: MaterialApp(
+//           home: Scaffold(
+//             appBar:AppBar(
+//               title:Text('Tela2'),
+//               backgroundColor: Colors.redAccent.shade700,
+//             ),
+//                   body:Center(
+//               child: ElevatedButton(
+//               child: Text('retornar a tela1'),
+//                onPressed: (){
+//                 Navigator.pushNamed(context,  '/tela1');
+//               },
+//               //onPressed: () { Navigator.pop(context);}    ////aqui navega entre telas  utilizando o pop
+//             ),
+//           ),
+//             ),
+//         ),
+//       );
+//     }
+//   }
+
+
+//trabalhando com async
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-
 void main(){
-  runApp(MyApp());
-}
-
-class Argumentos{                //transição de dados entre telas 
-  final int id;
-  final String nome;
-  Argumentos(this.id,this.nome);
-
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}):super(key: key);
-
- static const routeName = '/tela2';    //transição de dados entre telas 
-
-  @override
-  Widget build(BuildContext context) {
-
-    final argumentos = ModalRoute.of(context)!.settings.arguments as Argumentos;   //transição de dados entre telas 
-    return MaterialApp(
-      home:Tela1(),
-      routes:{
-        '/tela1' : (context) => Tela1(), //rotas nomiadas, sempre utilizar  
-        //Tela2.routeName:(context) => Tela2(), //transição de dados entre telas 
-        '/tela2' : (context) => Tela2()
-      }
-    );
-  }
-}
-  class Tela1 extends StatelessWidget {
-    const Tela1({Key? key}): super(key: key);
+/*
+Future<void> quatro = Future.delayed(
+  Duration(seconds: 3));
+  quatro.then((value) =>print(4));
+*/
+  print(1);
+  print(2);
+  print(3);
   
-    @override
-    Widget build(BuildContext context) {
-      return Container(
-        child: MaterialApp(
-          home: Scaffold(
-            appBar:AppBar(
-              title:Text('Tela1'),
-              backgroundColor: Colors.greenAccent.shade700
-            ),
-            body:Center(
-              child: ElevatedButton(
-              child: Text('ir tela2'),
-              onPressed: (){
-                Navigator.pushNamed(context,  '/tela2');
-              },
-              /*
-              onPressed: () { Navigator.push(context,      ////aqui navega entre telas  utilizando o push
-              MaterialPageRoute(
-                builder: (context){return Tela2();
-                },
-                ));
+}
+ Future<void> quatro() async{
+  Future.delayed(Duration(seconds: 10),() => print(4));
+ }
 
-              },
-              */
-            ),
-          ),
-         ),
-        ),
-      );
-    }
-  }
-
-  class Tela2 extends StatelessWidget {
-    const Tela2({Key? key}): super(key: key);
-  
-    @override
-    Widget build(BuildContext context) {
-      return Container(
-        child: MaterialApp(
-          home: Scaffold(
-            appBar:AppBar(
-              title:Text('Tela2'),
-              backgroundColor: Colors.redAccent.shade700,
-            ),
-                  body:Center(
-              child: ElevatedButton(
-              child: Text('retornar a tela1'),
-               onPressed: (){
-                Navigator.pushNamed(context,  '/tela1');
-              },
-              //onPressed: () { Navigator.pop(context);}    ////aqui navega entre telas  utilizando o pop
-            ),
-          ),
-            ),
-        ),
-      );
-    }
-  }
-
-
-
-
+//https://pub.dev/ 
 // assistir com calma sobre o Radio 
 
 //!!!!!
 //aula | | |
 //     V V V
-//Fluter Navegação com rotas 
+//Fluter Lista de Produtos
